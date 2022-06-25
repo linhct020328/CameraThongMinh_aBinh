@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Video Stream</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        body {
+            background-color: lightgray;
+        }
+
+        img {
+            border: 3px solid #f50057;
+            border-radius: 25px;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand ms-2" style="color: #00e5ff" href="#"><b>(@_*)'</b></a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto ms-3 mb-2 mb-lg-0">
+                        <li class="nav-item me-4">
+                            <a class="nav-link active" aria-current="page" href="{{url_for('index')}}">Trang
+                                chủ</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item me-4">
+                            <a class="nav-link active" href="{{url_for('streaming')}}">Trực tiếp</a>
+                        </li>
+                        <li class="nav-item me-4">
+                            <a class="nav-link active" href="{{url_for('videoplayback')}}">Đã lưu</a>
+                        </li>
+                        {% if role == 'admin' %}
+                        <li class="nav-item me-4">
+                            <a class="nav-link active" style="color: #f50057" href="{{url_for('admingg')}}">Quản lí</a>
+                        </li>
+                        {%endif%}
+                        <li class="nav-item me-4">
+                            <a class="nav-link active" href="{{url_for('logout')}}">Đăng xuất</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <div>
+            {% if current_user.is_authenticated and role == 'admin' %}
+            <h4 class="text-center">From KMA with nove (*_^)'</h4>
+            <br><br><br>
+            <div class="row justify-content-around ">
+                <div class="row col-md-4 justify-content-center align-items-center">
+                        <div class="card">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <th>{{user.id}}</th>
+                                        <td>{{user.username}}</td>
+                                        <td>{{user.role}}</td>
+                                        <td>
+                                            <a href="{{ url_for('deleteuser', id = user.id) }}" class="btn btn-danger">Xóa</a>
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+                <div class="row col-md-5 justify-content-center align-items-center">
+                    <form action="{{url_for('register')}}" method="post">
+                        <div class="card">
+                            <br>
+                            <h3 class="text-center" style="color:#f50057">Thêm người dùng</h3>
+                            <br><br>
+                            <div class="form-group text-center">
+                                <input style="max-width: 68%; margin-left: 15%; margin-right: 15%;" type="text" name="username"
+                                    class="form-control text-center" placeholder="Tài khoản" />
+                            </div>
+                            <br>
+                            <div class="form-group text-center">
+                                <input style="max-width: 68%; margin-left: 15%; margin-right: 15%;" type="password"
+                                    name="password" class="form-control text-center" placeholder="Mật khẩu" />
+                            </div>
+                            <br>
+                            <select style="max-width: 68%; margin-left: 15%; margin-right: 15%;" id="role" name="role">
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <br>
+                            <div class="form-group text-center">
+                                <input type="submit" value="Thêm" class="btn btn-info text-center" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <br>
+        <div class="card"
+            style="width: 500px;height: 450px;margin-left: 50%;margin-top: 20%; transform: translate(-50%,-50%);">
+            <form action="{{url_for('login')}}" method="POST">
+                <br>
+                <br>
+                <h3 class="text-center" style="color:#f50057">ĐĂNG NHẬP</h3>
+                <br>
+                <br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="text-center alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div class="form-group text-center">
+                    <input style="max-width: 68%; margin-left: 15%; margin-right: 15%;" type="text" name="username"
+                        class="form-control text-center" placeholder="Tài khoản" />
+                </div>
+                <br>
+                <div class="form-group text-center">
+                    <input style="max-width: 68%; margin-left: 15%; margin-right: 15%;" type="password" name="password"
+                        class="form-control text-center" placeholder="Mật khẩu" />
+                </div>
+                <br>
+                <div class="form-group text-center">
+                    <input type="submit" value="Đăng nhập" class="btn btn-info text-center" />
+                </div>
+            </form>
+        </div>
+        {%endif%}
+    </div>
+    </div>
+</body>
+<br><br>
+<footer class="footer">
+    <div class="text-center p-3">
+        ©2021 From KMA with love (*_^)'
+    </div>
+</footer>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/source.js') }}"></script>
+
+</html>
